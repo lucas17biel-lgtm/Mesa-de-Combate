@@ -52,9 +52,10 @@ header.top p{margin:2px 0 0;color:#cdb892}
 .row{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
 .hp{font-weight:600;font-size:1.05rem;font-variant-numeric:tabular-nums}
 .bar{height:14px;border-radius:7px;background:#2b1a0e33;margin:8px 0 12px;overflow:hidden;box-shadow:inset 0 1px 3px #0005}
-.bar>i{display:block;height:100%;width:0;background:var(--heal);transition:width .35s ease,background .35s}
-.bar>i.mid{background:#c9962c}.bar>i.low{background:var(--hurt)}
-.ctrl{display:grid;grid-template-columns:84px 1fr 1fr;gap:8px}
+.bar>i{display:block;height:100%;width:0;background:#4a9b62;transition:width .7s cubic-bezier(.22,.61,.36,1),background-color .4s ease;will-change:width,background-color}
+.bar>i.high{background-color:#4a9b62!important}.bar>i.mid{background-color:#e0a82e!important}.bar>i.low{background-color:#d84a40!important}.bar>i.empty{background-color:#888888!important}
+.ctrl{display:grid;grid-template-columns:84px repeat(3,minmax(0,1fr));gap:8px}
+@media(max-width:420px){.ctrl{grid-template-columns:1fr 1fr 1fr}.ctrl input{grid-column:1/-1}}
 .ctrl input,.add input{width:100%;min-height:44px;padding:8px 10px;border-radius:8px;border:1px solid #6a4d33;background:#fff8e6;color:var(--ink)}
 .card.down{filter:grayscale(.85) brightness(.82)}
 .card.down h3{text-decoration:line-through}
@@ -95,10 +96,8 @@ header.top h1{background:linear-gradient(#fff0c0,#d6a94a 55%,#9a6b1c);-webkit-ba
 .chips button{border:1px solid #6a4d33;background:#fff8e6aa;color:var(--ink);border-radius:999px;min-height:32px;padding:2px 12px;cursor:pointer;font-weight:600}
 .chips button:hover{background:#fff}
 .card.hit{animation:shake .4s}.card.healed{animation:glow .9s}
-.card.crit:not(.down){animation:pulse 1.6s ease-in-out infinite}
 @keyframes shake{20%{transform:translateX(-8px) rotate(-1deg)}40%{transform:translateX(8px) rotate(1deg)}60%{transform:translateX(-5px)}80%{transform:translateX(4px)}}
 @keyframes glow{40%{box-shadow:0 0 0 4px #7fe0958a,0 0 34px #7fe095}}
-@keyframes pulse{50%{box-shadow:0 0 0 3px #e0574a99,0 0 22px #e0574a}}
 .float{position:absolute;right:18px;top:34px;font:700 2rem var(--display);pointer-events:none;animation:rise 1s ease-out forwards;text-shadow:0 2px 0 #fff8;z-index:2}
 .float.d{color:#b3261e}.float.h{color:#1f7a3a}
 @keyframes rise{from{transform:translateY(0) scale(.6);opacity:0}20%{opacity:1;transform:translateY(-10px) scale(1.25)}to{transform:translateY(-64px);opacity:0}}
@@ -106,8 +105,15 @@ header.top h1{background:linear-gradient(#fff0c0,#d6a94a 55%,#9a6b1c);-webkit-ba
 .dtray{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
 .dtray button{width:54px;height:54px;border:0;cursor:pointer;font:700 .95rem var(--display);color:#2b1a0e;background:linear-gradient(135deg,#f6e8c2,#c9a557);clip-path:polygon(50% 0,100% 26%,100% 74%,50% 100%,0 74%,0 26%);transition:transform .15s}
 .dtray button:hover{transform:rotate(14deg) scale(1.12)}.dtray button:focus-visible{outline:none;background:#fff}
+.dtray button.selected{background:linear-gradient(135deg,#fff4bd,#d6a94a);box-shadow:0 0 0 3px #fff5,0 0 18px #d6a94a}
+.dice-heading{width:100%;display:flex;gap:6px;justify-content:center;align-items:baseline;flex-wrap:wrap;font-family:var(--display);color:var(--gold)}
+.dice-heading span{font:400 .95rem var(--body);color:#cdb892}
+.dice-pool{width:100%;min-height:28px;text-align:center;color:#f1dfb6;font-weight:600}
+.dice-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;width:100%}
+.dice-actions .btn{min-width:120px}
+.dice-result{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.dice-breakdown{width:100%;text-align:center;color:#e6d6b0;font-size:1rem;overflow-wrap:anywhere}
 .dres{min-width:170px;text-align:center;font:700 1.6rem var(--display);color:var(--gold)}
-.dres.roll{animation:wob .12s infinite}.dres.crit{color:#fff;text-shadow:0 0 14px gold,0 0 30px orange}.dres.fail{color:#ff8a80;text-shadow:0 0 14px red}
 @keyframes wob{50%{transform:rotate(-3deg) scale(1.06)}}
 .banner{animation:bglow 2s ease-in-out infinite}
 @keyframes bglow{50%{box-shadow:0 0 28px #d6a94aaa}}
@@ -120,20 +126,60 @@ header.top h1{background:linear-gradient(#fff0c0,#d6a94a 55%,#9a6b1c);-webkit-ba
 .mbox h2{margin-bottom:8px}.mbox p{margin:0}
 .mact{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:16px}
 .mbox .btn.ghost{color:var(--ink);box-shadow:inset 0 0 0 1px #6a4d33}
-.dstage{perspective:700px;width:112px;height:112px;display:grid;place-items:center;filter:drop-shadow(0 8px 8px #000b);transition:filter .3s}
-.dstage.crit{filter:drop-shadow(0 0 12px gold) drop-shadow(0 0 28px orange)}.dstage.fail{filter:drop-shadow(0 0 14px #e0291c)}
-.die{position:relative;width:96px;height:96px;display:grid;place-items:center;font:700 1.9rem var(--display);color:#2b1a0e;background:radial-gradient(circle at 30% 25%,#fff4d0,#e2bd66 45%,#9a6b1c);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
+.dstage{perspective:700px;width:100%;min-height:112px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:center;filter:drop-shadow(0 8px 8px #000b);transition:filter .3s}
+.die{position:relative;width:76px;height:76px;display:grid;place-items:center;font:700 1.55rem var(--display);color:#2b1a0e;background:radial-gradient(circle at 30% 25%,#fff4d0,#e2bd66 45%,#9a6b1c);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
 .die::before{content:"";position:absolute;inset:9px;background:linear-gradient(135deg,#fff7,#0000 50%,#0004);clip-path:inherit}
 .die span{position:relative;text-shadow:0 1px 0 #fff8}
 .die.s4{clip-path:polygon(50% 4%,98% 92%,2% 92%);padding-top:22px}.die.s6{clip-path:inset(4% round 16%)}
 .die.s8{clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}.die.s10{clip-path:polygon(50% 0,100% 38%,50% 100%,0 38%)}
 .die.s12{clip-path:polygon(50% 0,100% 38%,82% 100%,18% 100%,0 38%)}.die.s100{clip-path:circle(50%)}
-.die.spin{animation:tumble 2.1s cubic-bezier(.25,.6,.3,1) both}
+.die.spin{animation:tumble 1.55s cubic-bezier(.25,.6,.3,1) both}
 .die.land{animation:land .6s ease-out both}
-.die.crit{background:radial-gradient(circle at 30% 25%,#fff,#ffd45a 45%,#e0801a)}.die.fail{background:radial-gradient(circle at 30% 25%,#ffd0c8,#d9584a 45%,#7a1d16);color:#fff}
 @keyframes tumble{0%{transform:translateY(-70px) rotateX(0) rotateY(0) rotateZ(0) scale(.6)}18%{transform:translateY(8px) rotateX(270deg) rotateY(180deg) rotateZ(90deg) scale(1.2)}32%{transform:translateY(-34px) rotateX(540deg) rotateY(360deg) rotateZ(240deg) scale(1.05)}50%{transform:translateY(4px) rotateX(900deg) rotateY(540deg) rotateZ(420deg) scale(1.1)}66%{transform:translateY(-14px) rotateX(1080deg) rotateY(720deg) rotateZ(560deg) scale(1)}84%{transform:translateY(2px) rotateX(1260deg) rotateY(900deg) rotateZ(680deg) scale(1.03)}100%{transform:translateY(0) rotateX(1440deg) rotateY(1080deg) rotateZ(720deg) scale(1)}}
 @keyframes land{0%{transform:scale(1.3)}35%{transform:scale(.9)}65%{transform:scale(1.06)}100%{transform:scale(1)}}
 [hidden]{display:none!important}
+
+/* Modernização visual — fantasia medieval com interface mais limpa */
+:root{--wood:#382315;--wood-hi:#68472d;--leather:#24160e;--parch:#f1e6cc;--parch-2:#e5d4ad;--gold:#e0b85c;--hero:#397e59;--villain:#a8443e;--hurt:#b9433c;--heal:#39845a;--display:"Cinzel","Palatino Linotype",Georgia,serif;--body:"Crimson Pro",Georgia,serif}
+body{background:
+ repeating-linear-gradient(90deg,rgba(20,9,3,.20) 0 2px,transparent 2px 118px),
+ repeating-linear-gradient(0deg,rgba(255,220,170,.045) 0 1px,transparent 1px 8px),
+ repeating-linear-gradient(2deg,rgba(0,0,0,.10) 0 3px,transparent 3px 21px),
+ radial-gradient(ellipse at 50% -15%,rgba(230,176,100,.22),transparent 52%),
+ linear-gradient(145deg,#755033,#49301e 48%,#2b190f);background-attachment:fixed}
+body::before{background:radial-gradient(ellipse at 50% 0,rgba(255,204,125,.12),transparent 58%),radial-gradient(ellipse at center,transparent 48%,rgba(0,0,0,.48));animation:none}
+.wrap{max-width:1240px;padding:clamp(16px,3vw,32px) clamp(14px,3vw,28px) 88px}
+header.top{padding:18px 20px;margin-bottom:24px;border:1px solid #d9b65c36;border-radius:20px;background:linear-gradient(120deg,#1c302bdc,#172321e8);box-shadow:0 14px 38px #0005,inset 0 1px #ffffff12;backdrop-filter:blur(12px)}
+.brand{display:flex;align-items:center;gap:14px}.brand-mark{width:48px;height:48px;display:grid;place-items:center;border-radius:15px;background:linear-gradient(145deg,#e8c875,#a77a2e);color:#1b241d;font-size:1.8rem;box-shadow:0 5px 16px #0005,inset 0 1px #fff8}
+header.top h1{font-size:clamp(1.45rem,4vw,2.15rem);letter-spacing:.035em;filter:drop-shadow(0 2px 8px #0008)}
+header.top p{color:#c8c5ad;font-size:1.02rem}
+.actions{gap:9px}.btn{border-radius:12px;padding:10px 17px;box-shadow:0 4px 12px #0003,inset 0 1px #ffffff45;font-size:.82rem;letter-spacing:.015em}.btn.ghost{background:#ffffff0c;color:#e9dfc5;box-shadow:inset 0 0 0 1px #d6a94a66}.btn.hurt{background:linear-gradient(145deg,#c95e52,#92352f)}.btn.heal{background:linear-gradient(145deg,#5a9d70,#2f6e49)}
+.board,.setup{gap:18px}.side{padding:clamp(14px,2vw,22px);border:1px solid #c69a584d;border-radius:18px;background:linear-gradient(145deg,rgba(75,47,28,.97),rgba(35,21,13,.98));box-shadow:0 14px 32px #0007,inset 0 1px #ffffff12}
+.side>h2{padding:0 2px 13px;margin-bottom:16px;border-bottom:1px solid #d6a94a42;font-size:1.22rem;letter-spacing:.04em}
+.cards{gap:13px}.card{border:1px solid #5a482c;border-left:5px solid var(--hero);border-radius:15px;padding:15px;background:linear-gradient(145deg,#f6edd9,#e6d5b2);box-shadow:0 6px 18px #0003;transition:transform .2s,box-shadow .2s}.villains .card{border-left-color:var(--villain)}.card:hover{transform:translateY(-2px);box-shadow:0 10px 22px #0004}.card h3{font-size:1.1rem}.sigil{width:42px;height:42px;font-size:1.1rem;box-shadow:0 3px 9px #0003,inset 0 0 0 2px #ffffff55}.hp{font-family:var(--display);font-size:.9rem;color:#4a3823}
+.bar{height:12px;border-radius:99px;background:#30241424;margin:12px 0 13px;box-shadow:inset 0 1px 3px #0003}.bar>i{border-radius:99px;background-image:linear-gradient(#ffffff50,#0000 70%)}
+.chips{gap:7px;margin:11px 0}.chips button{min-width:42px;border:1px solid #b9a77f;background:#fff9ed;border-radius:9px;color:#51402b;font-size:.88rem;transition:background .15s,transform .15s}.chips button:hover{background:#fff;transform:translateY(-1px)}
+.ctrl{grid-template-columns:minmax(78px,1fr) 1fr 1fr;gap:8px}.ctrl input,.add input{border:1px solid #b9a77f;border-radius:10px;background:#fffaf0;box-shadow:inset 0 1px 2px #0000000b;font-size:1rem}.ctrl .btn{padding:8px 10px}.card.down{opacity:.75;filter:grayscale(.7)}
+.add{grid-template-columns:minmax(0,1fr) 110px;gap:10px}.add label{font-family:var(--display);font-size:.78rem;letter-spacing:.04em;color:#d8cba9}.add .btn{margin-top:3px}.roster{gap:9px}.roster li{border:1px solid #c9b78e;border-radius:11px;background:linear-gradient(120deg,#f4e9cf,#e7d6b1);padding:6px 8px 6px 13px}.roster button:hover{background:#7a1d1614}
+.start{margin-top:26px}.start .btn{min-width:min(100%,260px);padding:15px 26px;font-size:.95rem}.empty{color:#bcb99f}
+.banner{border-radius:14px;background:linear-gradient(120deg,#332918,#1c2822);box-shadow:0 8px 24px #0004;font-size:1.1rem}.log{margin-top:20px;padding:18px 20px;border-radius:16px;border:1px solid #c69a584d;background:linear-gradient(145deg,#2e1c11ed,#1d120ceF);box-shadow:0 10px 28px #0006}.log h2{font-size:1rem;letter-spacing:.04em}.log ol{max-height:220px;gap:7px}.log li{padding:5px 9px;border-radius:7px;background:#ffffff08;font-size:.95rem}.log li.d{color:#f2aaa0}.log li.h{color:#a7ddb2}.log li.x{color:#e6c879}
+.dice{gap:13px;padding:18px;border-radius:18px;border:1px solid #c69a5866;background:linear-gradient(145deg,#4a2e1c,#24160e);box-shadow:0 12px 30px #0006}.dice-heading{font-size:1rem}.dice-heading span{color:#c6c0a8}.dtray{gap:10px}.dtray button{width:52px;height:52px;border-radius:12px;clip-path:none;border:1px solid #f6df9c;background:linear-gradient(145deg,#f6e8c2,#c9a557);box-shadow:0 4px 10px #0003}.dtray button.selected{background:linear-gradient(145deg,#fff4bd,#d6a94a);box-shadow:0 0 0 2px #f4d98c,0 0 20px #d6a94a66}.dice-pool{color:#f0dfb9}.dice-result{padding-top:5px}.dstage{min-height:100px}.die{border-radius:13px;clip-path:none!important;width:68px;height:68px;border:2px solid #f5dda0;box-shadow:inset 0 0 0 4px #ffffff26,0 6px 14px #0005}.die::before{inset:5px;border-radius:9px;clip-path:none;background:linear-gradient(135deg,#fff5,#0000 55%,#0003)}.die.s4,.die.s6,.die.s8,.die.s10,.die.s12,.die.s100{clip-path:none;padding:0}.dres{font-size:1.55rem}.dice-breakdown{color:#d7c9a7}
+.mbox{border:1px solid #d6a94a;border-radius:18px;box-shadow:0 20px 60px #0009}.toast{border-radius:13px}.mute{border:1px solid #f1d68f;width:52px;height:52px;box-shadow:0 6px 18px #0006}
+@media(max-width:520px){header.top{padding:14px;border-radius:15px}.brand{gap:10px}.brand-mark{width:42px;height:42px}.actions{width:100%}.actions .btn{flex:1}.ctrl{grid-template-columns:1fr 1fr}.ctrl input{grid-column:1/-1}.add{grid-template-columns:minmax(0,1fr) 92px}.side{border-radius:15px}.dice{padding:14px 10px}.dtray button{width:47px;height:47px}.die{width:58px;height:58px;font-size:1.3rem}}
+
+
+/* Acabamento: mesa de madeira preservada, interface mais atual e barras realmente dinâmicas */
+header.top{background:linear-gradient(135deg,rgba(80,49,27,.94),rgba(38,22,13,.96));border-color:#d6a94a66}
+.side>h2{color:#f0d18a;text-shadow:0 1px 2px #0008}
+.side.heroes>h2{color:#a9d9ad}.side.villains>h2{color:#f0aaa0}
+.dice-heading{display:flex;flex-direction:column;gap:3px;color:#f5e6c8}
+.dice-heading span{font-size:.9rem;color:#d2bd96}
+.bar>i{background-color:var(--hp-color,#32834f)!important;background-image:linear-gradient(180deg,#ffffff38,transparent 75%)!important;transition:width .7s cubic-bezier(.22,.61,.36,1),background-color .45s ease!important}
+.bar>i.high{--hp-color:#32834f}.bar>i.mid{--hp-color:#d89b19}.bar>i.low{--hp-color:#c83232}.bar>i.empty{--hp-color:#777777}
+.card .bar{background:#24170f35;border:1px solid #5a432b66}
+.card{box-shadow:0 5px 15px #160b0670,inset 0 1px #fff9}
+@media(max-width:520px){.wrap{padding-left:12px;padding-right:12px}.side{background:linear-gradient(145deg,rgba(75,47,28,.98),rgba(35,21,13,.99))}}
+
 </style>
 </head>
 <body>
@@ -142,7 +188,7 @@ header.top h1{background:linear-gradient(#fff0c0,#d6a94a 55%,#9a6b1c);-webkit-ba
 <div id="confirm" class="modal" role="dialog" aria-modal="true" aria-labelledby="ct" hidden><div class="mbox"><h2 id="ct">Encerrar este combate?</h2><p>A vida atual, a crônica e a lista de personagens serão apagadas.</p><div class="mact"><button class="btn ghost" id="no" type="button">Continuar lutando</button><button class="btn hurt" id="yes" type="button">Novo combate</button></div></div></div>
 <div class="wrap">
   <header class="top">
-    <div><h1>Mesa de Combate</h1><p id="sub">Monte o encontro e acompanhe a vida de todos.</p></div>
+    <div class="brand"><span class="brand-mark" aria-hidden="true">⚔</span><div><h1>Mesa de Combate</h1><p id="sub">Monte o encontro e acompanhe a vida de todos.</p></div></div>
     <div class="actions" id="topActions" hidden>
       <button class="btn" id="round" title="Avançar para a próxima rodada">Rodada 1</button>
       <button class="btn ghost" id="undo">Desfazer</button>
@@ -175,7 +221,13 @@ header.top h1{background:linear-gradient(#fff0c0,#d6a94a 55%,#9a6b1c);-webkit-ba
 
   <main id="combatView" hidden>
     <div class="banner" id="banner" hidden></div>
-    <section class="dice" aria-label="Rolagem de dados"><div class="dtray"><button type="button" data-d="4">d4</button><button type="button" data-d="6">d6</button><button type="button" data-d="8">d8</button><button type="button" data-d="10">d10</button><button type="button" data-d="12">d12</button><button type="button" data-d="20">d20</button><button type="button" data-d="100">d100</button></div><div class="dstage" id="dstage"><div class="die s20" id="die"><span id="dnum">?</span></div></div><output id="dres" class="dres" aria-live="polite">Role um dado</output></section>
+    <section class="dice" aria-label="Rolagem de dados">
+      <div class="dice-heading"><strong>Monte sua rolagem</strong><span>Toque nos dados para adicioná-los</span></div>
+      <div class="dtray"><button type="button" data-d="4">d4</button><button type="button" data-d="6">d6</button><button type="button" data-d="8">d8</button><button type="button" data-d="10">d10</button><button type="button" data-d="12">d12</button><button type="button" data-d="20">d20</button><button type="button" data-d="100">d100</button></div>
+      <div class="dice-pool" id="dicePool">Nenhum dado selecionado</div>
+      <div class="dice-actions"><button class="btn" type="button" id="rollDice" disabled>Rolar dados</button><button class="btn ghost" type="button" id="clearDice" disabled>Limpar</button></div>
+      <div class="dice-result" aria-live="polite"><div class="dstage" id="dstage" aria-label="Dados rolando"></div><output id="dres" class="dres">Escolha os dados e role</output><div id="diceBreakdown" class="dice-breakdown"></div></div>
+    </section>
     <div class="board">
       <section class="side heroes" aria-labelledby="ch"><h2 id="ch">Heróis <small id="hc"></small></h2><div class="cards" id="c-heroes"></div></section>
       <section class="side villains" aria-labelledby="cv"><h2 id="cv">Vilões <small id="vc"></small></h2><div class="cards" id="c-villains"></div></section>
@@ -215,17 +267,31 @@ header.top h1{background:linear-gradient(#fff0c0,#d6a94a 55%,#9a6b1c);-webkit-ba
   }
   function pct(p){return Math.max(0,Math.min(100,p.vida/p.max*100))}
   function cardHTML(p,side){
-    var down=p.vida<=0,w=pct(p.vida);
-    return '<article class="card'+(down?' down':w<=25?' crit':'')+'" data-id="'+p.id+'" data-side="'+side+'">'+
+    var down=p.vida<=0,w=pct(p);
+    return '<article class="card'+(down?' down':'')+'" data-id="'+p.id+'" data-side="'+side+'">'+
       (down?'<span class="stamp">Derrotado</span>':'')+
       '<div class="row"><span class="sigil" aria-hidden="true">'+esc(p.nome.charAt(0))+'</span><h3>'+esc(p.nome)+'</h3><span class="hp">'+p.vida+' / '+p.max+'</span></div>'+
-      '<div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="'+p.max+'" aria-valuenow="'+Math.max(0,p.vida)+'" aria-label="Vida de '+esc(p.nome)+'"><i class="'+(w<=25?'low':w<=60?'mid':'')+'" style="width:'+w+'%"></i></div>'+
+      '<div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="'+p.max+'" aria-valuenow="'+Math.max(0,p.vida)+'" aria-label="Vida de '+esc(p.nome)+'"><i class="'+(p.vida<=0?'empty':w<=25?'low':w<=60?'mid':'high')+'" style="width:'+w+'%;--hp-color:'+(p.vida<=0?'#777777':w<=25?'#c83232':w<=60?'#d89b19':'#32834f')+'"></i></div>'+
       '<div class="chips" role="group" aria-label="Atalhos de valor"><button type="button" data-q="1">+1</button><button type="button" data-q="5">+5</button><button type="button" data-q="10">+10</button><button type="button" data-q="20">+20</button><button type="button" data-q="c">Limpar</button></div><div class="ctrl"><input type="number" min="1" inputmode="numeric" placeholder="Valor" aria-label="Valor para '+esc(p.nome)+'">'+
-      '<button class="btn hurt" data-act="dano" type="button">Dano</button><button class="btn heal" data-act="cura" type="button">Cura</button></div></article>';
+      '<button class="btn hurt" data-act="dano" type="button">Dano</button><button class="btn heal" data-act="cura" type="button">Cura</button></div></article>'; 
   }
   function renderCombat(){
     ["heroes","villains"].forEach(function(s){
-      $("c-"+s).innerHTML=S[s].map(function(p){return cardHTML(p,s)}).join("");
+      var container=$("c-"+s),previous={};
+      container.querySelectorAll(".card").forEach(function(card){
+        var bar=card.querySelector(".bar>i");
+        if(bar)previous[card.dataset.id]=bar.style.width;
+      });
+      container.innerHTML=S[s].map(function(p){return cardHTML(p,s)}).join("");
+      S[s].forEach(function(p){
+        var bar=container.querySelector('.card[data-id="'+p.id+'"] .bar>i');
+        if(!bar)return;
+        var target=pct(p)+"%";
+        if(previous[p.id]!==undefined){
+          bar.style.width=previous[p.id];
+          requestAnimationFrame(function(){bar.style.width=target});
+        }
+      });
       var alive=S[s].filter(function(p){return p.vida>0}).length;
       $(s==="heroes"?"hc":"vc").textContent=alive+" de "+S[s].length+" em pé";
     });
@@ -251,7 +317,7 @@ header.top h1{background:linear-gradient(#fff0c0,#d6a94a 55%,#9a6b1c);-webkit-ba
   }
   function apply(side,id,kind,val){
     var p=S[side].find(function(x){return x.id===id});if(!p||!(val>0))return;
-    snap();var before=p.vida,snd=kind==="dano"?"hit":"heal";
+    snap();var before=p.vida,snd=kind==="cura"?"heal":"hit";
     if(kind==="dano"){p.vida=Math.max(0,p.vida-val);addLog(p.nome+" recebeu "+val+" de dano ("+p.vida+"/"+p.max+")","d")}
     else{p.vida+=val;addLog(p.nome+" recuperou "+val+" de vida ("+p.vida+"/"+p.max+")","h")}
     if(before>0&&p.vida<=0){snd="down";toast(p.nome+" foi derrotado!");addLog(p.nome+" foi derrotado!","d")}
@@ -263,7 +329,7 @@ header.top h1{background:linear-gradient(#fff0c0,#d6a94a 55%,#9a6b1c);-webkit-ba
     f.addEventListener("submit",function(e){
       e.preventDefault();var side=f.dataset.side,n=title(f.n.value),v=parseInt(f.v.value,10);
       if(!n||!(v>0))return;
-      S[side].push({id:nid(),nome:n,vida:v,max:v});sfx(side==="heroes"?"addH":"addV");f.reset();f.n.focus();render();
+      S[side].push({id:nid(),nome:n,vida:v,max:v});sfx(side==="heroes"?"addH":"addV");f.reset();render();
     });
   });
   document.addEventListener("click",function(e){
@@ -297,29 +363,51 @@ header.top h1{background:linear-gradient(#fff0c0,#d6a94a 55%,#9a6b1c);-webkit-ba
     case 'gong':T(196,1.6,{v:.22});T(293,1.4,{v:.12});T(587,1,{v:.06});N(.3,{f:600,v:.2});break;
     case 'rattle':N(.035,{f:1800+Math.random()*2200,v:.22});break;
     case 'land':T(140,.16,{to:70,v:.3});N(.06,{f:900,v:.3});break;
-    case 'crit':[784,988,1175,1568].forEach(function(f,i){T(f,.4,{at:i*.09,v:.12})});break;
-    case 'fail':[311,294,277].forEach(function(f,i){T(f,.25,{at:i*.22,type:'sawtooth',v:.1})});T(233,.7,{to:110,type:'sawtooth',v:.1,at:.66});break;
   }}
   var mb=$('mute');function paintMute(){mb.textContent=muted?'🔇':'🔊';mb.setAttribute('aria-pressed',muted?'true':'false');mb.setAttribute('aria-label',muted?'Som desligado':'Som ligado')}
   mb.addEventListener('click',function(){muted=!muted;try{localStorage.setItem('mesa-mudo',muted?'1':'0')}catch(e){}paintMute();if(!muted)sfx('tick')});paintMute();
   function fx(id,kind,val){var c=document.querySelector('.card[data-id="'+id+'"]');if(!c)return;var d=kind==="dano";c.classList.add(d?"hit":"healed");var f=document.createElement("span");f.className="float "+(d?"d":"h");f.textContent=(d?"−":"+")+val;c.appendChild(f);setTimeout(function(){f.remove();c.classList.remove("hit","healed")},1000)}
   function confetti(win){var e=["✨","🎉","⭐","🏆"];for(var i=0;i<36;i++){var s=document.createElement("span");s.className="conf";s.textContent=e[i%e.length];s.style.left=Math.random()*100+"vw";s.style.animationDuration=(2+Math.random()*2.5)+"s";s.style.animationDelay=(Math.random()*.6)+"s";document.body.appendChild(s);setTimeout(function(x){x.remove()},5500,s)}}
   function renderLog(){$("log").innerHTML=S.log.map(function(e){return '<li class="'+e.c+'">'+esc(e.m)+'</li>'}).join("")}
-  document.addEventListener("click",function(e){var q=e.target.closest("[data-q]");if(!q)return;sfx('tick');var i=q.closest(".card").querySelector("input");i.value=q.dataset.q==="c"?"":(parseInt(i.value,10)||0)+ +q.dataset.q;i.focus()});
+  document.addEventListener("click",function(e){var q=e.target.closest("[data-q]");if(!q)return;sfx('tick');var i=q.closest(".card").querySelector("input");i.value=q.dataset.q==="c"?"":(parseInt(i.value,10)||0)+ +q.dataset.q});
   document.addEventListener("keydown",function(e){if(e.key!=="Enter"||!e.target.matches(".card input"))return;var c=e.target.closest(".card"),v=parseInt(e.target.value,10);if(v>0)apply(c.dataset.side,c.dataset.id,"dano",v)});
-  var rolling=false;
+  var rolling=false,dicePool={};
+  function poolCount(){return Object.keys(dicePool).reduce(function(total,k){return total+dicePool[k]},0)}
+  function updateDicePool(){
+    var types=[4,6,8,10,12,20,100],parts=[];
+    types.forEach(function(n){
+      var b=document.querySelector('.dtray [data-d="'+n+'"]'),count=dicePool[n]||0;
+      if(b){b.classList.toggle("selected",count>0);b.setAttribute("aria-pressed",count>0?"true":"false");b.textContent=count?"d"+n+" ×"+count:"d"+n}
+      if(count)parts.push(count+"d"+n);
+    });
+    $("dicePool").textContent=parts.length?"Selecionados: "+parts.join(" + "):"Nenhum dado selecionado";
+    $("rollDice").disabled=!poolCount()||rolling;$("clearDice").disabled=!poolCount()||rolling;
+  }
   document.addEventListener("click",function(e){
-    var b=e.target.closest("[data-d]");if(!b||rolling)return;
-    var n=+b.dataset.d,r=1+Math.floor(Math.random()*n),out=$("dres"),die=$("die"),num=$("dnum"),st=$("dstage"),i=0;
-    rolling=true;out.className="dres";out.textContent="Rolando…";st.className="dstage";
-    die.className="die s"+n;void die.offsetWidth;die.className="die s"+n+" spin";
-    function tick(){sfx('rattle');num.textContent=1+Math.floor(Math.random()*n);if(++i<16)setTimeout(tick,40+i*i*1.1);else finish()}
+    var b=e.target.closest(".dtray [data-d]");if(!b||rolling)return;
+    var n=+b.dataset.d;dicePool[n]=(dicePool[n]||0)+1;sfx("tick");updateDicePool();
+  });
+  $("clearDice").addEventListener("click",function(){if(rolling)return;dicePool={};updateDicePool();sfx("tick")});
+  $("rollDice").addEventListener("click",function(){
+    if(rolling||!poolCount())return;
+    var types=[4,6,8,10,12,20,100],rolls=[],total=0,notation=[];
+    types.forEach(function(n){var count=dicePool[n]||0;if(!count)return;notation.push(count+"d"+n);for(var j=0;j<count;j++){var value=1+Math.floor(Math.random()*n);rolls.push({die:n,value:value});total+=value;}});
+    rolling=true;updateDicePool();
+    var out=$("dres"),stage=$("dstage"),breakdown=$("diceBreakdown"),elements=[];
+    out.className="dres roll";out.textContent="Rolando "+rolls.length+" dado(s)…";stage.className="dstage";stage.innerHTML="";breakdown.textContent="";
+    rolls.forEach(function(r,index){
+      var el=document.createElement("div");el.className="die s"+r.die+" spin";el.style.animationDelay=(index*20)+"ms";
+      var span=document.createElement("span");span.textContent="?";el.appendChild(span);stage.appendChild(el);elements.push(el);
+    });
+    var ticks=0;function tick(){sfx("rattle");elements.forEach(function(el){el.firstChild.textContent="·";});if(++ticks<14)setTimeout(tick,55+ticks*8);else finish();}
     function finish(){
-      var c20=n===20&&r===20,f20=n===20&&r===1,k=c20?" crit":f20?" fail":"";
-      sfx(c20?'crit':f20?'fail':'land');num.textContent=r;die.className="die s"+n+" land"+k;st.className="dstage"+k;
-      out.textContent="d"+n+": "+r+(c20?" — crítico!":f20?" — falha!":"");out.className="dres"+k;
-      addLog("Dado d"+n+": "+r+(c20?" — acerto crítico!":f20?" — falha crítica!":""),"x");renderLog();save();
-      if(c20)confetti(true);setTimeout(function(){rolling=false},450);
+      sfx("land");
+      elements.forEach(function(el,index){el.className="die s"+rolls[index].die+" land";el.firstChild.textContent=rolls[index].value;});
+      stage.className="dstage";
+      out.className="dres";out.textContent=notation.join(" + ")+" = "+total;
+      breakdown.textContent="Resultados: "+rolls.map(function(r){return "d"+r.die+" → "+r.value;}).join("  ·  ");
+      addLog("Rolagem "+notation.join(" + ")+": ["+rolls.map(function(r){return r.value;}).join(", ")+"] = "+total,"x");
+      renderLog();save();dicePool={};rolling=false;updateDicePool();
     }
     tick();
   });
@@ -342,7 +430,7 @@ header.top h1{background:linear-gradient(#fff0c0,#d6a94a 55%,#9a6b1c);-webkit-ba
   $("yes").addEventListener("click",function(){
     sfx('swoosh');$("confirm").hidden=true;S={phase:"setup",heroes:[],villains:[],log:[],stack:[],won:null};render();
   });
-  load();render();
+  load();render();updateDicePool();
 })();
 </script>
 </body>
