@@ -137,6 +137,27 @@ header.top h1{background:linear-gradient(#fff0c0,#d6a94a 55%,#9a6b1c);-webkit-ba
 .die.land{animation:land .6s ease-out both}
 @keyframes tumble{0%{transform:translateY(-70px) rotateX(0) rotateY(0) rotateZ(0) scale(.6)}18%{transform:translateY(8px) rotateX(270deg) rotateY(180deg) rotateZ(90deg) scale(1.2)}32%{transform:translateY(-34px) rotateX(540deg) rotateY(360deg) rotateZ(240deg) scale(1.05)}50%{transform:translateY(4px) rotateX(900deg) rotateY(540deg) rotateZ(420deg) scale(1.1)}66%{transform:translateY(-14px) rotateX(1080deg) rotateY(720deg) rotateZ(560deg) scale(1)}84%{transform:translateY(2px) rotateX(1260deg) rotateY(900deg) rotateZ(680deg) scale(1.03)}100%{transform:translateY(0) rotateX(1440deg) rotateY(1080deg) rotateZ(720deg) scale(1)}}
 @keyframes land{0%{transform:scale(1.3)}35%{transform:scale(.9)}65%{transform:scale(1.06)}100%{transform:scale(1)}}
+.tabs{display:flex;gap:6px;margin:0 0 20px;border-bottom:2px solid #0006;overflow-x:auto}
+.tab{border:0;background:none;color:#cdb892;font:700 .95rem var(--display);padding:12px 20px;min-height:44px;cursor:pointer;border-radius:10px 10px 0 0;white-space:nowrap;transition:background .2s,color .2s}
+.tab:hover{background:#0003;color:var(--parch)}
+.tab[aria-selected=true]{background:var(--leather);color:var(--gold);box-shadow:inset 0 3px 0 var(--gold)}
+.names{display:grid;grid-template-columns:minmax(260px,360px) 1fr;gap:22px;align-items:start}
+@media(max-width:820px){.names{grid-template-columns:1fr}}
+.field{margin-bottom:14px}.field label,.seg legend{display:block;font-size:.95rem;color:#cdb892;margin-bottom:4px;padding:0}
+.inp{width:100%;min-height:44px;padding:8px 10px;border-radius:8px;border:1px solid #6a4d33;background:#fff8e6;color:var(--ink)}
+.seg{border:0;padding:0;margin:0 0 12px;display:grid;grid-template-columns:1fr 1fr;gap:8px}.seg legend{grid-column:1/-1}
+.seg label{position:relative}.seg input{position:absolute;opacity:0;inset:0;margin:0;width:100%;height:100%;cursor:pointer}
+.seg span{display:block;text-align:center;padding:10px;min-height:44px;border-radius:8px;border:1px solid #d6a94a88;color:var(--parch);font:700 .85rem var(--display);transition:background .2s}
+.seg input:checked+span{background:linear-gradient(#e2bd66,#b98b32);color:#2b1a0e;border-color:transparent}
+.seg input:focus-visible+span{outline:3px solid var(--gold);outline-offset:2px}
+.hint{color:#cdb892;font-size:.95rem;margin:0 0 14px}.nerr{color:#ff9d92;margin:0 0 12px}
+#ngen{width:100%}.btn.sm{min-height:36px;padding:6px 12px;font-size:.8rem}
+.nlist{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.nm{display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--parch),var(--parch-2));color:var(--ink);border-radius:8px;padding:6px 8px 6px 14px;border-left:6px solid var(--gold);box-shadow:0 3px 0 #0005,0 8px 16px #0006;animation:pop .4s ease-out both;animation-delay:var(--i,0ms)}
+.nt{flex:1;font:700 1.35rem var(--display);letter-spacing:.04em;overflow-wrap:anywhere}
+.ibtn{border:0;background:#2b1a0e14;border-radius:8px;min-width:44px;min-height:44px;cursor:pointer;font-size:1.1rem;transition:background .15s,transform .15s}
+.ibtn:hover{background:#2b1a0e2e;transform:scale(1.08)}
+@keyframes pop{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}
 [hidden]{display:none!important}
 
 /* Modernização visual — fantasia medieval com interface mais limpa */
@@ -196,6 +217,7 @@ header.top{background:linear-gradient(135deg,rgba(80,49,27,.94),rgba(38,22,13,.9
     </div>
   </header>
 
+  <nav class="tabs" role="tablist" aria-label="Seções"><button class="tab" role="tab" data-tab="combat" aria-selected="true" type="button">⚔️ Combate</button><button class="tab" role="tab" data-tab="names" aria-selected="false" tabindex="-1" type="button">📜 Gerador de nomes</button></nav>
   <main id="setupView">
     <div class="setup">
       <section class="side heroes" aria-labelledby="sh"><h2 id="sh">Heróis</h2>
@@ -217,6 +239,23 @@ header.top{background:linear-gradient(135deg,rgba(80,49,27,.94),rgba(38,22,13,.9
     </div>
     <div class="start"><button class="btn" id="start" disabled>Iniciar combate</button>
       <p class="empty" id="startHint">Adicione ao menos um herói e um vilão.</p></div>
+  </main>
+
+  <main id="namesView" hidden>
+    <div class="names">
+      <section class="side" aria-labelledby="nh"><h2 id="nh">Forja de nomes</h2>
+        <form id="nform" novalidate>
+          <div class="field"><label for="nl">Letras por nome (1 a 30)</label><input class="inp" id="nl" type="number" min="1" max="30" value="6" inputmode="numeric"></div>
+          <div class="field"><label for="nq">Quantos nomes (1 a 20)</label><input class="inp" id="nq" type="number" min="1" max="20" value="5" inputmode="numeric"></div>
+          <fieldset class="seg"><legend>Estilo</legend>
+            <label><input type="radio" name="mode" value="puro" checked><span>Aleatório</span></label>
+            <label><input type="radio" name="mode" value="pron"><span>Pronunciável</span></label></fieldset>
+          <p class="hint">Aleatório sorteia qualquer letra. Pronunciável alterna consoantes e vogais, para nomes mais fáceis de falar na mesa.</p>
+          <p class="nerr" id="nerr" role="alert" hidden></p>
+          <button class="btn" id="ngen" type="submit">Gerar nomes</button>
+        </form></section>
+      <section class="side" aria-labelledby="nr"><h2 id="nr">Nomes gerados <button class="btn ghost sm" id="ncopy" type="button" disabled>Copiar todos</button></h2><ol class="nlist" id="nlist"></ol></section>
+    </div>
   </main>
 
   <main id="combatView" hidden>
@@ -302,9 +341,9 @@ header.top{background:linear-gradient(135deg,rgba(80,49,27,.94),rgba(38,22,13,.9
   }
   function render(){
     var c=S.phase==="combat";
-    $("setupView").hidden=c;$("combatView").hidden=!c;$("topActions").hidden=!c;
+    var nm=tab==="names";$("setupView").hidden=c||nm;$("combatView").hidden=!c||nm;$("topActions").hidden=!c||nm;$("namesView").hidden=!nm;
     $("sub").textContent=c?"Aplique dano e cura; o sistema avisa quando alguém cair.":"Monte o encontro e acompanhe a vida de todos.";
-    c?renderCombat():renderSetup();save();
+    if(nm)$("sub").textContent="Crie nomes para heróis, vilões e figurantes em segundos.";else if(c)renderCombat();else renderSetup();save();
   }
 
   function checkWin(){
@@ -344,8 +383,10 @@ header.top{background:linear-gradient(135deg,rgba(80,49,27,.94),rgba(38,22,13,.9
   function ctx(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC}
   function tone(f,d,o){o=o||{};var c=ctx();if(!c||muted)return;var t=c.currentTime+(o.at||0),os=c.createOscillator(),g=c.createGain();os.type=o.type||'sine';os.frequency.setValueAtTime(f,t);if(o.to)os.frequency.exponentialRampToValueAtTime(o.to,t+d);g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(o.v||.2,t+.012);g.gain.exponentialRampToValueAtTime(0.0001,t+d);os.connect(g);g.connect(c.destination);os.start(t);os.stop(t+d+.03)}
   function noise(d,o){o=o||{};var c=ctx();if(!c||muted)return;var t=c.currentTime+(o.at||0),n=Math.max(1,Math.floor(c.sampleRate*d)),b=c.createBuffer(1,n,c.sampleRate),a=b.getChannelData(0),i;for(i=0;i<n;i++)a[i]=Math.random()*2-1;var s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();s.buffer=b;f.type='bandpass';f.frequency.setValueAtTime(o.f||1000,t);if(o.sweep)f.frequency.exponentialRampToValueAtTime(o.sweep,t+d);g.gain.setValueAtTime(o.v||.2,t);g.gain.exponentialRampToValueAtTime(0.0001,t+d);s.connect(f);f.connect(g);g.connect(c.destination);s.start(t)}
-  function sfx(n){var T=tone,N=noise;switch(n){
+  function sfx(n){try{sfxRaw(n)}catch(e){}}
+  function sfxRaw(n){var T=tone,N=noise;switch(n){
     case 'tick':T(760,.04,{type:'square',v:.05});break;
+    case 'gen':[392,523,659,784,1047].forEach(function(f,i){T(f,.18,{at:i*.05,type:'triangle',v:.1})});break;
     case 'err':T(160,.14,{type:'square',v:.1});T(130,.18,{type:'square',v:.1,at:.16});break;
     case 'addH':T(392,.12,{type:'triangle'});T(587,.22,{type:'triangle',at:.1});break;
     case 'addV':T(220,.15,{type:'sawtooth',v:.12});T(165,.25,{type:'sawtooth',v:.12,at:.12});break;
@@ -430,6 +471,28 @@ header.top{background:linear-gradient(135deg,rgba(80,49,27,.94),rgba(38,22,13,.9
   $("yes").addEventListener("click",function(){
     sfx('swoosh');$("confirm").hidden=true;S={phase:"setup",heroes:[],villains:[],log:[],stack:[],won:null};render();
   });
+  var tab='combat',names=[],opts={L:6,m:'puro'};
+  function setTab(t,focus){tab=t;document.querySelectorAll('.tab').forEach(function(b){var on=b.dataset.tab===t;b.setAttribute('aria-selected',on?'true':'false');b.tabIndex=on?0:-1;if(on&&focus)b.focus()});sfx('tick');render()}
+  document.querySelectorAll('.tab').forEach(function(b,i,all){b.addEventListener('click',function(){setTab(b.dataset.tab)});b.addEventListener('keydown',function(e){var k=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;if(k){e.preventDefault();setTab(all[(i+k+all.length)%all.length].dataset.tab,true)}})});
+  var AL='ABCDEFGHJKLMNOPQRSTUVWXYZ'.split(''),VG=['A','E','O','U'],CS=AL.filter(function(l){return VG.indexOf(l)<0});
+  function pick(a){return a[Math.floor(Math.random()*a.length)]}
+  function genName(len,mode){var s='',i;for(i=0;i<len;i++)s+=pick(mode==='pron'?(i%2?VG:CS):AL);return s.charAt(0)+s.slice(1).toLowerCase()}
+  function drawNames(){var el=$('nlist');$('ncopy').disabled=!names.length;
+    if(!names.length){el.innerHTML='<li class="empty">Escolha as opções e clique em “Gerar nomes”.</li>';return}
+    el.innerHTML=names.map(function(n,i){return '<li class="nm" style="--i:'+(i*60)+'ms"><span class="nt">'+esc(n)+'</span><button class="ibtn" type="button" data-nre="'+i+'" aria-label="Sortear outro nome no lugar de '+esc(n)+'" title="Sortear outro">🎲</button><button class="ibtn" type="button" data-ncp="'+i+'" aria-label="Copiar '+esc(n)+'" title="Copiar">📋</button></li>'}).join('')}
+  function copy(txt,msg){function ok(){sfx('tick');toast(msg||'Copiado!','win')}
+    function fb(){try{var t=document.createElement('textarea');t.value=txt;t.style.cssText='position:fixed;opacity:0';document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();ok()}catch(e){toast('Não foi possível copiar.')}}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(ok,fb)}else fb()}
+  $('nform').addEventListener('submit',function(e){e.preventDefault();
+    var L=parseInt($('nl').value,10),Q=parseInt($('nq').value,10),err=$('nerr');
+    if(!(L>=1&&L<=30)||!(Q>=1&&Q<=20)){err.textContent='Use de 1 a 30 letras e de 1 a 20 nomes.';err.hidden=false;sfx('err');return}
+    err.hidden=true;opts={L:L,m:document.querySelector('input[name=mode]:checked').value};names=[];
+    for(var i=0;i<Q;i++)names.push(genName(L,opts.m));sfx('gen');drawNames()});
+  $('nlist').addEventListener('click',function(e){var r=e.target.closest('[data-nre]'),c=e.target.closest('[data-ncp]');
+    if(r){var i=+r.dataset.nre;names[i]=genName(opts.L,opts.m);r.parentNode.querySelector('.nt').textContent=names[i];sfx('rattle')}
+    else if(c)copy(names[+c.dataset.ncp])});
+  $('ncopy').addEventListener('click',function(){copy(names.join('\n'),'Lista copiada!')});
+  drawNames();
   load();render();updateDicePool();
 })();
 </script>
